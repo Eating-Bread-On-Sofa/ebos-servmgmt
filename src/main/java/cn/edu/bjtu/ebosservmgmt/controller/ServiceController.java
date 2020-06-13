@@ -8,6 +8,7 @@ import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
@@ -36,6 +37,13 @@ public class ServiceController {
         String[] names = {name};
         System.out.println("deploy service: ip="+ip+", name="+name);
         return fileService.sendFiles(url,getServiceFolder(),names);
+    }
+
+    @CrossOrigin
+    @PostMapping()
+    public JSONObject saveService(@RequestParam("file") MultipartFile[] multipartFiles){
+        String path = getServiceFolder();
+        return fileService.saveFiles(multipartFiles, path);
     }
 
     private String getServiceFolder(){
