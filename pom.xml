@@ -11,7 +11,7 @@
     <groupId>cn.edu.bjtu</groupId>
     <artifactId>ebos-servmgmt</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ebos-servmgmt</name>
+    <fileName>ebos-servmgmt</fileName>
     <description>Demo for service management</description>
 
     <properties>
