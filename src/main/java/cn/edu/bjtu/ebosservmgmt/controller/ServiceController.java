@@ -4,9 +4,8 @@ import cn.edu.bjtu.ebosservmgmt.entity.FileDescriptor;
 import cn.edu.bjtu.ebosservmgmt.entity.FileSavingMsg;
 import cn.edu.bjtu.ebosservmgmt.service.FileService;
 import cn.edu.bjtu.ebosservmgmt.service.LogService;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -26,6 +25,7 @@ public class ServiceController {
     @Autowired
     FileService fileService;
 
+    @ApiOperation(value = "查看服务中心所有的微服务")
     @CrossOrigin
     @GetMapping("/list")
     public List<FileDescriptor> getLocalServiceList(){
@@ -33,6 +33,7 @@ public class ServiceController {
         return fileService.getFileList(getServiceFolder(), ex);
     }
 
+    @ApiOperation(value = "向ip网关下发指定name的微服务")
     @CrossOrigin
     @PostMapping("/ip/{ip}/name/{name}")
     public List<FileSavingMsg> deployService(@PathVariable String ip, @PathVariable String name){
@@ -42,6 +43,7 @@ public class ServiceController {
         return fileService.sendFiles(url,getServiceFolder(),names);
     }
 
+    @ApiOperation(value = "上传新的微服务")
     @CrossOrigin
     @PostMapping()
     public List<FileSavingMsg> saveService(@RequestParam("file") MultipartFile[] multipartFiles){
@@ -49,6 +51,7 @@ public class ServiceController {
         return fileService.saveFiles(multipartFiles, path);
     }
 
+    @ApiOperation(value = "微服务健康检测")
     @CrossOrigin
     @GetMapping("/ping")
     public String ping(){return "pong";}
