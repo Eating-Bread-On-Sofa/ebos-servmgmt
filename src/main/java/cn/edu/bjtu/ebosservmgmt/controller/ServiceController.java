@@ -51,6 +51,7 @@ public class ServiceController {
         String url = "http://"+ip+":8090/api/instance/service";
         String[] names = {name};
         System.out.println("deploy service: ip="+ip+", name="+name);
+        logService.info("update","向"+ip+"网关下发"+name+"微服务");
         return fileService.sendFiles(url,getServiceFolder(),names);
     }
 
@@ -59,6 +60,7 @@ public class ServiceController {
     @PostMapping()
     public List<FileSavingMsg> saveService(@RequestParam("file") MultipartFile[] multipartFiles){
         String path = getServiceFolder();
+        logService.info("create","上传了一个新的微服务");
         return fileService.saveFiles(multipartFiles, path);
     }
 
@@ -71,13 +73,15 @@ public class ServiceController {
                 status.add(rawSubscribe);
                 subscribeService.save(rawSubscribe.getSubTopic());
                 threadPoolExecutor.execute(rawSubscribe);
-                logService.info(null,"设备管理微服务订阅topic：" + rawSubscribe.getSubTopic());
+                logService.info("create","服务管理成功订阅主题"+ rawSubscribe.getSubTopic());
                 return "订阅成功";
             }catch (Exception e) {
                 e.printStackTrace();
+                logService.error("create","服务管理订阅主题"+rawSubscribe.getSubTopic()+"时，参数设定有误。");
                 return "参数错误!";
             }
         }else {
+            logService.error("create","服务管理已订阅主题"+rawSubscribe.getSubTopic()+",再次订阅失败");
             return "订阅主题重复";
         }
     }
@@ -101,7 +105,6 @@ public class ServiceController {
         synchronized (status){
             flag = status.remove(search(subTopic));
         }
-        logService.info(null,"删除设备管理上topic为"+subTopic+"的订阅");
         return flag;
     }
 
@@ -126,7 +129,10 @@ public class ServiceController {
     @ApiOperation(value = "微服务健康检测")
     @CrossOrigin
     @GetMapping("/ping")
-    public String ping(){return "pong";}
+    public String ping(){
+        logService.info("retrieve","对服务管理进行了一次健康检测");
+        return "pong";
+    }
 
     private String getServiceFolder(){
         return fileService.getThisJarPath() + File.separator + "service";
